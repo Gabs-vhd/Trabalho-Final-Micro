@@ -83,7 +83,6 @@ class Bomber(pygame.sprite.Sprite):
 
         # Atributos específicos do Bombardeiro
         self.health = 5
-        # --- MUDANÇA 1: Trocamos a velocidade de X para Y ---
         self.speed_y = 1 # Move-se lentamente para baixo
 
         # --- MUDANÇA 2: Posição inicial agora é no topo da tela ---
@@ -92,21 +91,20 @@ class Bomber(pygame.sprite.Sprite):
         # Posiciona a parte de baixo do avião no topo da tela, para ele "entrar" voando
         self.rect.bottom = 0
 
-        # Lógica de tiro radial (não muda)
+        # Lógica de tiro radial 
         self.shoot_cooldown = 1200
         self.last_shot_time = pygame.time.get_ticks()
         self.bullets_to_fire = 12
 
-        # Lógica de animação (não muda)
+        # Lógica de animação 
         self.last_anim_update = pygame.time.get_ticks()
         self.anim_speed = 100
 
     def update(self, all_sprites_group, enemy_bullets_group):
         self.animate()
-        # --- MUDANÇA 3: O movimento agora é no eixo Y ---
         self.rect.y += self.speed_y
         
-        # --- MUDANÇA 4: A verificação de saída da tela agora é para baixo ---
+        #  verificação de saída da tela agora é para baixo 
         # Se sair completamente por baixo, se auto-destrói
         if self.rect.top > SCREEN_HEIGHT:
             self.kill()

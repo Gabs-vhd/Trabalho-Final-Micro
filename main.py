@@ -38,30 +38,27 @@ class Game:
         button_img = self.assets['play_button']
         self.play_button_rect = button_img.get_rect(center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 170))
         
-        # NOVO: Controle de animação do fundo
         self.bg_current_frame = 0
         self.bg_last_update = pygame.time.get_ticks()
-        self.bg_anim_speed = 100 # Milissegundos entre cada frame do fundo
+        self.bg_anim_speed = 20
 
     def load_assets(self):
         main_dir = os.path.dirname(__file__)
         # --- Definição dos diretórios de assets ---
-        # É uma boa prática definir todos os caminhos no início do método.
+        
         wallpaper_dir = os.path.join(main_dir, "wallpaper")
-        enemy_dir = os.path.join(main_dir, "frame_enemy") # <-- CORREÇÃO: Variável definida aqui.
+        enemy_dir = os.path.join(main_dir, "frame_enemy") 
         plane_dir = os.path.join(main_dir, "frame_plane")
         shot_dir = os.path.join(main_dir, "frame_shot")
         explosion_dir = os.path.join(main_dir, "explosion_flame")
         sound_dir = os.path.join(main_dir, "Sound")
 
         # --- Carregamento dos assets ---
-    
-        # CORRIGIDO: Carregamento da animação de fundo
+ 
         self.assets['background_anim'] = []
         for i in range(1, 15):
             filename = f"wallpaper{i}.png"
             img = pygame.image.load(os.path.join(wallpaper_dir, filename)).convert()
-            # CORRIGIDO: A linha de 'append' agora está DENTRO do loop
             self.assets['background_anim'].append(img)
 
         self.assets['intro_background'] = pygame.image.load(os.path.join(main_dir, "wallpaper_intro.png")).convert()
@@ -70,12 +67,10 @@ class Game:
         self.assets['player_anim'] = [pygame.image.load(os.path.join(plane_dir, f"Avi{i}.png")).convert_alpha() for i in range(1, 13)]
         self.assets['enemy_anim'] = [pygame.image.load(os.path.join(enemy_dir, f"enemy{i}.png")).convert_alpha() for i in range(1, 9)]
         self.assets['explosion_anim'] = [pygame.transform.scale(pygame.image.load(os.path.join(explosion_dir, f"boom_flame{i}.png")).convert_alpha(), (75, 75)) for i in range(1, 10)]
-    
-        # CORRIGIDO: Carregamento do bombardeiro
+
         self.assets['bomber_anim'] = []
         for i in range(1, 7):
             filename = f"bombardeiro{i}.png"
-            # Agora 'enemy_dir' está definido e o caminho será encontrado corretamente
             img = pygame.image.load(os.path.join(enemy_dir, filename)).convert_alpha()
             self.assets['bomber_anim'].append(img)
 
@@ -134,9 +129,8 @@ class Game:
         self.all_sprites.add(self.player)
         self.enemy_spawn_timer = pygame.USEREVENT + 1
         pygame.time.set_timer(self.enemy_spawn_timer, 1100)
-        # NOVO: Timer para o Bombardeiro (a cada 60 segundos)
         self.bomber_spawn_timer = pygame.USEREVENT + 2 # Um número de evento diferente
-        pygame.time.set_timer(self.bomber_spawn_timer, 60000)
+        pygame.time.set_timer(self.bomber_spawn_timer, 60000) #timer do bombareiro, 1min
         self.assets['engine_sound'].play(loops=-1)
         self.game_state = "playing"
 
@@ -193,7 +187,7 @@ class Game:
 
         hits = pygame.sprite.groupcollide(self.enemies, self.bullets, False, True)
     
-        # Agora, processamos cada inimigo que foi atingido
+        # cada inimigo que foi atingido
         for enemy_hit in hits:
             # Cria uma pequena explosão no ponto de impacto
             explosion_point = hits[enemy_hit][0].rect.center
@@ -205,12 +199,12 @@ class Game:
             if isinstance(enemy_hit, Bomber):
                 # Chama o método 'hit()' do bombardeiro. Se retornar True, ele foi destruído.
                 if enemy_hit.hit():
-                    self.score += 50 # Adiciona 50 pontos
+                    self.score += 50 
                     self.assets['explosion_sound'].play() # Som de explosão maior
             else:
                 # Se for um inimigo comum, ele é destruído na hora
                 enemy_hit.kill()
-                self.score += 10 # Adiciona 10 pontos
+                self.score += 10 
                 self.assets['explosion_sound'].play()
         
         enemy_hits = pygame.sprite.spritecollide(self.player, self.enemies, True, pygame.sprite.collide_circle)
@@ -229,13 +223,10 @@ class Game:
     
         self.all_sprites.draw(self.screen)
     
-        # --- CÓDIGO FALTANDO PARA A PONTUAÇÃO ---
-        # Re-adicione este bloco ao seu método:
         score_text = f"Pontos: {self.score}"
         text_surface = self.hud_font.render(score_text, True, WHITE)
         text_rect = text_surface.get_rect(bottomright=(SCREEN_WIDTH - 20, SCREEN_HEIGHT - 20))
         self.screen.blit(text_surface, text_rect)
-        # -----------------------------------------
     
         self.send_data_to_arduino()
 
