@@ -26,7 +26,7 @@ class Player(pygame.sprite.Sprite):
         self.cooldown_rate = 2.5
 
         self.last_anim_update = pygame.time.get_ticks()
-        self.anim_speed = 30
+        self.anim_speed = 10
 
     def update(self, dt, screen):
         self.animate()

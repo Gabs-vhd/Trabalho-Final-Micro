@@ -40,7 +40,7 @@ class Game:
         
         self.bg_current_frame = 0
         self.bg_last_update = pygame.time.get_ticks()
-        self.bg_anim_speed = 20
+        self.bg_anim_speed = 110
 
     def load_assets(self):
         main_dir = os.path.dirname(__file__)
